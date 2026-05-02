@@ -24,10 +24,12 @@ jobs:
         with:
           node-version: "25"
 
+      - uses: pnpm/action-setup@v6
+
       - name: Install and build
         run: |
-          npm ci
-          npm run build
+          pnpm install
+          pnpm run build
         env:
           GITHUB_PAGES_BASE: "brain-trainer"
 
