@@ -61,29 +61,30 @@ import {
   STEP_MS as NBACK_STEP_MS,
 } from "./exercises/nback";
 import { SudokuGame } from "./SudokuGame";
+import {
+  navigateToScreen,
+  screenFromPath,
+  type Screen,
+} from "./routes";
 import { getPreferredTheme, THEME_STORAGE_KEY, type ThemeMode } from "./theme";
 import "./App.css";
-
-type Screen =
-  | "home"
-  | "mental-math"
-  | "number-memory"
-  | "sequence-memory"
-  | "reaction-time"
-  | "chimp-test"
-  | "word-memory"
-  | "visual-memory"
-  | "schulte-table"
-  | "stroop-test"
-  | "aim-trainer"
-  | "n-back"
-  | "sudoku";
 
 const DEFAULT_OPS: ReadonlySet<Operation> = new Set(OPERATIONS);
 
 export default function App() {
   const [theme, setTheme] = useState<ThemeMode>(() => getPreferredTheme());
-  const [screen, setScreen] = useState<Screen>("home");
+  const [screen, setScreen] = useState<Screen>(() => screenFromPath());
+
+  const navigate = useCallback((next: Screen) => {
+    setScreen(next);
+    navigateToScreen(next);
+  }, []);
+
+  useEffect(() => {
+    const onPopState = () => setScreen(screenFromPath());
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   useLayoutEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -132,19 +133,19 @@ export default function App() {
         )}
       </header>
 
-      {screen === "home" && <Home onChoose={setScreen} />}
-      {screen === "mental-math" && <MentalMath onBack={() => setScreen("home")} />}
-      {screen === "number-memory" && <NumberMemory onBack={() => setScreen("home")} />}
-      {screen === "sequence-memory" && <SequenceMemory onBack={() => setScreen("home")} />}
-      {screen === "reaction-time" && <ReactionTime onBack={() => setScreen("home")} />}
-      {screen === "chimp-test" && <ChimpTest onBack={() => setScreen("home")} />}
-      {screen === "word-memory" && <WordMemory onBack={() => setScreen("home")} />}
-      {screen === "visual-memory" && <VisualMemory onBack={() => setScreen("home")} />}
-      {screen === "schulte-table" && <SchulteTable onBack={() => setScreen("home")} />}
-      {screen === "stroop-test" && <StroopTest onBack={() => setScreen("home")} />}
-      {screen === "aim-trainer" && <AimTrainer onBack={() => setScreen("home")} />}
-      {screen === "n-back" && <NBack onBack={() => setScreen("home")} />}
-      {screen === "sudoku" && <SudokuGame onBack={() => setScreen("home")} />}
+      {screen === "home" && <Home onChoose={navigate} />}
+      {screen === "mental-math" && <MentalMath onBack={() => navigate("home")} />}
+      {screen === "number-memory" && <NumberMemory onBack={() => navigate("home")} />}
+      {screen === "sequence-memory" && <SequenceMemory onBack={() => navigate("home")} />}
+      {screen === "reaction-time" && <ReactionTime onBack={() => navigate("home")} />}
+      {screen === "chimp-test" && <ChimpTest onBack={() => navigate("home")} />}
+      {screen === "word-memory" && <WordMemory onBack={() => navigate("home")} />}
+      {screen === "visual-memory" && <VisualMemory onBack={() => navigate("home")} />}
+      {screen === "schulte-table" && <SchulteTable onBack={() => navigate("home")} />}
+      {screen === "stroop-test" && <StroopTest onBack={() => navigate("home")} />}
+      {screen === "aim-trainer" && <AimTrainer onBack={() => navigate("home")} />}
+      {screen === "n-back" && <NBack onBack={() => navigate("home")} />}
+      {screen === "sudoku" && <SudokuGame onBack={() => navigate("home")} />}
     </div>
   );
 }

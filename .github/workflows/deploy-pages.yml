@@ -40,6 +40,7 @@ jobs:
             echo "::error::dist/index.html still references dev entry — build is wrong."
             exit 1
           fi
+          cp dist/index.html dist/404.html
           echo "OK: production bundle in dist/"
 
       - uses: actions/upload-pages-artifact@v3
