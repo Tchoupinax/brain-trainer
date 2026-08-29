@@ -60,6 +60,7 @@ import {
   SEQUENCE_LENGTH as NBACK_LENGTH,
   STEP_MS as NBACK_STEP_MS,
 } from "./exercises/nback";
+import { SudokuGame } from "./SudokuGame";
 import { getPreferredTheme, THEME_STORAGE_KEY, type ThemeMode } from "./theme";
 import "./App.css";
 
@@ -75,7 +76,8 @@ type Screen =
   | "schulte-table"
   | "stroop-test"
   | "aim-trainer"
-  | "n-back";
+  | "n-back"
+  | "sudoku";
 
 const DEFAULT_OPS: ReadonlySet<Operation> = new Set(OPERATIONS);
 
@@ -142,6 +144,7 @@ export default function App() {
       {screen === "stroop-test" && <StroopTest onBack={() => setScreen("home")} />}
       {screen === "aim-trainer" && <AimTrainer onBack={() => setScreen("home")} />}
       {screen === "n-back" && <NBack onBack={() => setScreen("home")} />}
+      {screen === "sudoku" && <SudokuGame onBack={() => setScreen("home")} />}
     </div>
   );
 }
@@ -288,6 +291,19 @@ function Home({ onChoose }: { onChoose: (screen: Screen) => void }) {
         <span className="exercise-card-title">2-back</span>
         <span className="exercise-card-desc">
           Press match when a letter repeats from two steps earlier.
+        </span>
+      </button>
+      <button
+        type="button"
+        className="exercise-card exercise-card--active"
+        onClick={() => onChoose("sudoku")}
+      >
+        <span className="exercise-card-icon" aria-hidden>
+          9
+        </span>
+        <span className="exercise-card-title">Sudoku</span>
+        <span className="exercise-card-desc">
+          Fill the 9×9 grid so every row, column, and box has digits 1–9.
         </span>
       </button>
       <div className="exercise-card exercise-card--soon" aria-disabled>
